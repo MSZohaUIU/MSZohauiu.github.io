@@ -213,47 +213,72 @@
     /* ── AVATAR ── */
     .hero-image {
       display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 20px;
+      flex-direction: column; gap: 24px;
       animation: fadeUp 0.7s 0.15s ease both;
     }
+    /* Outer container — wide enough for the rings */
     .avatar-wrap {
       position: relative;
-      width: 340px; height: 340px;
+      width: 380px; height: 420px;
       display: flex; align-items: center; justify-content: center;
     }
-    .avatar-ring {
-      position: absolute; inset: -18px; border-radius: 50%;
-      border: 1.5px dashed rgba(91,82,232,0.3);
-      animation: spin 25s linear infinite;
-      pointer-events: none; transition: border-color 0.35s;
-    }
-    [data-theme="dark"] .avatar-ring { border-color: rgba(108,99,255,0.35); }
-    .avatar-ring-2 {
-      position: absolute; inset: -36px; border-radius: 50%;
-      border: 1.5px solid transparent;
-      border-top-color: var(--accent);
-      border-right-color: var(--accent2);
-      animation: spin 15s linear infinite reverse;
-      pointer-events: none;
-    }
-    .avatar-placeholder {
+    /* Image sits at the BACK (z-index 1), fills the space naturally */
+    .avatar-img {
+      position: absolute;
       width: 100%; height: 100%;
-      background: transparent; border: none;
-      display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: visible;
-    }
-    .avatar-placeholder img {
-      width: 118%; height: 118%;
       object-fit: contain;
-      filter: drop-shadow(0 8px 24px rgba(91,82,232,0.22)) drop-shadow(0 2px 8px rgba(0,0,0,0.15));
-      position: relative; z-index: 2;
+      object-position: center bottom;
+      z-index: 1;
+      pointer-events: none;
+      filter: drop-shadow(0 12px 32px rgba(91,82,232,0.18));
       transition: filter 0.35s;
     }
-    [data-theme="dark"] .avatar-placeholder img {
-      filter: drop-shadow(0 8px 32px rgba(108,99,255,0.35)) drop-shadow(0 4px 20px rgba(0,0,0,0.6));
+    [data-theme="dark"] .avatar-img {
+      filter: drop-shadow(0 12px 36px rgba(108,99,255,0.38)) drop-shadow(0 4px 16px rgba(0,0,0,0.55));
     }
+    /* Rings spin IN FRONT of the image (z-index 3) */
+    .avatar-ring {
+      position: absolute;
+      /* centered oval that hugs the character's body */
+      top: 50%; left: 50%;
+      width: 280px; height: 320px;
+      margin-top: -160px; margin-left: -140px;
+      border-radius: 50%;
+      border: 1.8px dashed rgba(91,82,232,0.45);
+      animation: spin 22s linear infinite;
+      z-index: 3;
+      pointer-events: none; transition: border-color 0.35s;
+    }
+    [data-theme="dark"] .avatar-ring { border-color: rgba(108,99,255,0.5); }
+    .avatar-ring-2 {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 330px; height: 380px;
+      margin-top: -190px; margin-left: -165px;
+      border-radius: 50%;
+      border: 1.8px solid transparent;
+      border-top-color: var(--accent);
+      border-right-color: var(--accent2);
+      animation: spin 14s linear infinite reverse;
+      z-index: 3;
+      pointer-events: none;
+    }
+    /* Dot ornaments on the rings */
+    .avatar-ring::before,
+    .avatar-ring-2::before {
+      content: '';
+      position: absolute; top: -4px; left: 50%;
+      width: 8px; height: 8px; margin-left: -4px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .avatar-ring-2::before { background: var(--accent2); box-shadow: 0 0 8px var(--accent2); }
+    /* Hero text content is underneath the image naturally — no overlap */
     .cert-badges {
-      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center;
+      position: relative; z-index: 4;
     }
     .cert-badge {
       font-family: var(--mono-font); font-size: 10px;
@@ -261,6 +286,10 @@
       border: 1px solid rgba(91,82,232,0.35);
       background: rgba(91,82,232,0.07); color: var(--accent);
       transition: all 0.35s;
+    }
+    .cert-badge:hover {
+      background: rgba(91,82,232,0.15);
+      border-color: var(--accent);
     }
     [data-theme="dark"] .cert-badge {
       border-color: rgba(108,99,255,0.4);
@@ -426,22 +455,44 @@
     /* ══════════════════════════════════════════
        CERTIFICATIONS
     ══════════════════════════════════════════ */
-    .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+    .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
     .cert-card {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 10px; padding: 18px 20px;
-      display: flex; align-items: flex-start; gap: 14px;
+      border-radius: 12px; padding: 18px 20px;
+      display: flex; align-items: center; gap: 16px;
       box-shadow: var(--shadow);
-      transition: background 0.35s, border-color 0.2s, box-shadow 0.2s;
+      transition: background 0.35s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
-    .cert-card:hover { border-color: var(--accent2); box-shadow: var(--card-hover-shadow); }
-    .cert-num {
-      font-family: var(--mono-font); font-size: 11px;
-      color: var(--accent2); min-width: 24px; padding-top: 2px;
+    .cert-card:hover {
+      border-color: var(--accent2);
+      box-shadow: var(--card-hover-shadow);
+      transform: translateY(-2px);
     }
-    .cert-card h4 { font-size: 13.5px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
-    .cert-card span { font-size: 11.5px; color: var(--muted); font-family: var(--mono-font); }
-    .cert-card .ec { color: var(--accent); }
+    /* Logo area — shows image if provided, fallback number if not */
+    .cert-logo {
+      flex-shrink: 0;
+      width: 52px; height: 52px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.35s;
+    }
+    .cert-card:hover .cert-logo { border-color: var(--accent2); }
+    .cert-logo img {
+      width: 100%; height: 100%;
+      object-fit: contain; padding: 4px;
+    }
+    .cert-logo-placeholder {
+      font-family: var(--mono-font); font-size: 12px;
+      font-weight: 700; color: var(--accent2);
+      letter-spacing: -0.5px;
+    }
+    .cert-info { flex: 1; min-width: 0; }
+    .cert-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); line-height: 1.4; }
+    .cert-card .cert-issuer { font-size: 11px; color: var(--muted); font-family: var(--mono-font); }
+    .cert-card .cert-issuer.ec { color: var(--accent); }
 
     /* ══════════════════════════════════════════
        TOOLS
@@ -592,11 +643,9 @@
   </div>
   <div class="hero-image">
     <div class="avatar-wrap">
+      <img class="avatar-img" src="images/photo.png" alt="Mohammad Samsuzzoha Arafat" />
       <div class="avatar-ring"></div>
       <div class="avatar-ring-2"></div>
-      <div class="avatar-placeholder">
-        <img src="photo.jpeg" alt="Mohammad Samsuzzoha Arafat" />
-      </div>
     </div>
     <div class="cert-badges">
       <span class="cert-badge">CSA</span>
@@ -785,18 +834,56 @@
   <span class="section-label">§ 05</span>
   <h2 class="section-title">Notable Certifications</h2>
   <div class="certs-grid">
-    <div class="cert-card"><span class="cert-num">01</span><div><h4>Certified Incident Handler (ECIH)</h4><span class="ec">EC-Council</span></div></div>
-    <div class="cert-card"><span class="cert-num">02</span><div><h4>Certified Hacking Forensic Investigator (CHFI)</h4><span class="ec">EC-Council</span></div></div>
-    <div class="cert-card"><span class="cert-num">03</span><div><h4>Certified SOC Analyst (CSA)</h4><span class="ec">EC-Council</span></div></div>
-    <div class="cert-card"><span class="cert-num">04</span><div><h4>Certified Ethical Hacker (CEH)</h4><span class="ec">EC-Council</span></div></div>
-    <div class="cert-card"><span class="cert-num">05</span><div><h4>SOAR: Swimlane Turbine SOC Analyst & Administrator</h4><span>Swimlane</span></div></div>
-    <div class="cert-card"><span class="cert-num">06</span><div><h4>Certified Integrator — Anomali</h4><span>Anomali · Certificate No. 156958628</span></div></div>
-    <div class="cert-card"><span class="cert-num">07</span><div><h4>PAM Core Access Control Engineer</h4><span>Senhasegura</span></div></div>
-    <div class="cert-card"><span class="cert-num">08</span><div><h4>Splunk 7.x Fundamentals Part 1</h4><span>Splunk</span></div></div>
-    <div class="cert-card"><span class="cert-num">09</span><div><h4>SOC Analyst Level-1</h4><span>Cybrary</span></div></div>
-    <div class="cert-card"><span class="cert-num">10</span><div><h4>Penetration Testing for Freelancing, Level-4</h4><span>NSDA — Bangladesh Govt. Authorization</span></div></div>
-    <div class="cert-card"><span class="cert-num">11</span><div><h4>CCNA</h4><span>Linux Pathshala</span></div></div>
-    <div class="cert-card"><span class="cert-num">12</span><div><h4>Introduction to Cybersecurity Tools & Cyber Attacks</h4><span>Coursera / IBM</span></div></div>
+    <!-- EC-Council certs — replace cert-logo-placeholder with <img src="images/certs/ec-council.png"> once you have the badge -->
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">EC</span></div>
+      <div class="cert-info"><h4>Certified Incident Handler (ECIH)</h4><span class="cert-issuer ec">EC-Council</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">EC</span></div>
+      <div class="cert-info"><h4>Certified Hacking Forensic Investigator (CHFI)</h4><span class="cert-issuer ec">EC-Council</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">EC</span></div>
+      <div class="cert-info"><h4>Certified SOC Analyst (CSA)</h4><span class="cert-issuer ec">EC-Council</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">EC</span></div>
+      <div class="cert-info"><h4>Certified Ethical Hacker (CEH)</h4><span class="cert-issuer ec">EC-Council</span></div>
+    </div>
+    <!-- Other certs — add your own badge images in images/certs/ folder -->
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">SW</span></div>
+      <div class="cert-info"><h4>SOAR: Swimlane Turbine SOC Analyst &amp; Administrator</h4><span class="cert-issuer">Swimlane</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">AN</span></div>
+      <div class="cert-info"><h4>Certified Integrator — Anomali</h4><span class="cert-issuer">Anomali · Cert No. 156958628</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">SH</span></div>
+      <div class="cert-info"><h4>PAM Core Access Control Engineer</h4><span class="cert-issuer">Senhasegura</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">SP</span></div>
+      <div class="cert-info"><h4>Splunk 7.x Fundamentals Part 1</h4><span class="cert-issuer">Splunk</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">CY</span></div>
+      <div class="cert-info"><h4>SOC Analyst Level-1</h4><span class="cert-issuer">Cybrary</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">NS</span></div>
+      <div class="cert-info"><h4>Penetration Testing for Freelancing, Level-4</h4><span class="cert-issuer">NSDA — Bangladesh Govt. Authorization</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">CC</span></div>
+      <div class="cert-info"><h4>CCNA</h4><span class="cert-issuer">Linux Pathshala</span></div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo"><span class="cert-logo-placeholder">CO</span></div>
+      <div class="cert-info"><h4>Introduction to Cybersecurity Tools &amp; Cyber Attacks</h4><span class="cert-issuer">Coursera / IBM</span></div>
+    </div>
   </div>
 </section>
 
